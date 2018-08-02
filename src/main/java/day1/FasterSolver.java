@@ -1,8 +1,5 @@
 package day1;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class FasterSolver implements Day1Solver {
 
 	@Override
@@ -12,46 +9,38 @@ public class FasterSolver implements Day1Solver {
 			return false;
 		}
 
-		Set<Integer> lower = new HashSet<Integer>(a.length/2);
-		Set<Integer> bigger = new HashSet<Integer>(a.length/2);
-		Set<Integer> dupes = new HashSet<Integer>();
+		boolean[] missing = new boolean[sum];
+
 		// first pass
-		for (int j = 1; j < a.length; j++) {
-			if (dupes.contains(a[j])) {
+		int half = sum / 2;
+		boolean even = (sum % 2 == 0);
+		boolean firstHalfFound = false;
+		for (int j = 0; j < a.length; j++) {
+			if (a[j] > sum || a[j] < 1) {
 				continue;
 			}
-			
-			
-			if (a[0] + a[j] == sum) {
+			if (even && a[j] == half) {
+				if (!firstHalfFound) {
+					firstHalfFound = true;
+				} else {
+					return true;
+				}
+				continue;
+			}
+
+			if (missing[a[j]]) {
 				return true;
-			} else if (a[0] + a[j] > sum) {
-				if (lower.contains(a[j])) {
-					dupes.add(a[j]);
-				} else {
-					lower.add(a[j]);
-				}
-			} else {
-				if (bigger.contains(a[j])) {
-					dupes.add(a[j]);
-				} else {
-					bigger.add(a[j]);
-				}
 			}
+			missing[sum - a[j]] = true;
+
 		}
 
-		if (sum % 2 == 0) {
-			for (int i : dupes) {
-				if (i + i == sum) {
-					return true;
-				}
+		for (int j = 0; j < a.length; j++) {
+			if (a[j] > sum || a[j] < 1) {
+				continue;
 			}
-		}
-
-		for (int i : lower) {
-			for (int j : bigger) {
-				if (i + j == sum) {
-					return true;
-				}
+			if (missing[a[j]]) {
+				return true;
 			}
 		}
 

@@ -11,20 +11,39 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class Day1SolverTest {
-	// this is the not hardest thing, done in the first move, but to watch overhead by optimisation
+
+	static Day1Solver solver1 = new SimpleSolver();
+	static Day1Solver solver2 = new FasterSolver();
+
+	// this is the not hardest thing, done in the first move, but to watch overhead
+	// by optimisation
 	static int[] veryLongArray = new int[Short.MAX_VALUE * 1024];
 	// solution are the last 2 entries which are equal (dupes)
 	static int[] interChangeingArrayManyDupes = new int[Short.MAX_VALUE * 2];
 	// solution are the last 2 entries which are not equal
-	static int[] interChangeingArrayManyDupesNoDupeAtEnd = new int[Short.MAX_VALUE *2];
-	static Day1Solver solver1 = new SimpleSolver();
-	static Day1Solver solver2 = new FasterSolver();
+	static int[] interChangeingArrayManyDupesNoDupeAtEnd = new int[Short.MAX_VALUE * 2];
+	static int[] impossibleAboveHalf = new int[Short.MAX_VALUE * 2];
 
+	static int realLifeExampleLength = Short.MAX_VALUE * 2048;
+	static int[] realLifeExample1 = new int[realLifeExampleLength];
+	static int[] realLifeExample2 = new int[realLifeExampleLength];
+	static int[] realLifeExample3 = new int[realLifeExampleLength];
+	static int[] realLifeExample4 = new int[realLifeExampleLength];
+	static int example1Sum = 0;
+	static int example2Sum = 0;
+	static int example3Sum = 0;
+	static int example4Sum = 0;
+
+	// prepare data
 	static {
 		for (int i = 0; i < veryLongArray.length - 1; i++) {
 			veryLongArray[i] = 1;
 		}
 		veryLongArray[veryLongArray.length - 1] = 2;
+
+		for (int i = 0; i < impossibleAboveHalf.length; i++) {
+			impossibleAboveHalf[i] = 6;
+		}
 
 		for (int i = 0; i < interChangeingArrayManyDupes.length / 2 - 1; i++) {
 			interChangeingArrayManyDupes[i * 2] = 3;
@@ -32,34 +51,48 @@ public class Day1SolverTest {
 		}
 		interChangeingArrayManyDupes[interChangeingArrayManyDupes.length - 2] = 4;
 		interChangeingArrayManyDupes[interChangeingArrayManyDupes.length - 1] = 4;
-		
+
 		for (int i = 0; i < interChangeingArrayManyDupesNoDupeAtEnd.length / 2 - 1; i++) {
 			interChangeingArrayManyDupesNoDupeAtEnd[i * 2] = 3;
 			interChangeingArrayManyDupesNoDupeAtEnd[i * 2 + 1] = 11;
 		}
 		interChangeingArrayManyDupesNoDupeAtEnd[interChangeingArrayManyDupesNoDupeAtEnd.length - 2] = 2;
 		interChangeingArrayManyDupesNoDupeAtEnd[interChangeingArrayManyDupesNoDupeAtEnd.length - 1] = 8;
+		for (int i = 0; i < realLifeExampleLength; i++) {
+			realLifeExample1[i] = (int) (Math.random() * realLifeExampleLength);
+			realLifeExample2[i] = (int) (Math.random() * realLifeExampleLength);
+			realLifeExample3[i] = (int) (Math.random() * realLifeExampleLength);
+			realLifeExample4[i] = (int) (Math.random() * realLifeExampleLength);
+		}
+		example1Sum = realLifeExample1[(int) (Math.random() * realLifeExampleLength)]
+				+ realLifeExample1[(int) (Math.random() * realLifeExampleLength)];
+		example2Sum = realLifeExample2[(int) (Math.random() * realLifeExampleLength)]
+				+ realLifeExample2[(int) (Math.random() * realLifeExampleLength)];
+		example3Sum = realLifeExample3[(int) (Math.random() * realLifeExampleLength)]
+				+ realLifeExample3[(int) (Math.random() * realLifeExampleLength)];
+		example4Sum = realLifeExample4[(int) (Math.random() * realLifeExampleLength)]
+				+ realLifeExample4[(int) (Math.random() * realLifeExampleLength)];
+
 	}
 
-	@Parameters(name = "{index}: canSumUpTo({0},{1}) ) {2} with solver {3}")
+	@Parameters(name = "{index}: canSumUpTo({1}) ) {2} ")
 	public static Collection<Object[]> data() {
 		return Arrays.asList(new Object[][] { //
-				// first solver
-				{ new int[] { 10, 15, 3, 7 }, 17, true, solver1 }, // given example
-				{ new int[] {}, 17, false, solver1 }, // empty array
-				{ new int[] { 17 }, 17, false, solver1 }, // size-1-array
-				{ new int[] { 1, 2, 3, 4 }, 8, false, solver1 }, // does not sum up
-				{ interChangeingArrayManyDupes, 8, true, solver1 }, // verrrry long array 1.101s
-				{ interChangeingArrayManyDupesNoDupeAtEnd, 10, true, solver1 }, // verrrry long array 1.093s
-				{ veryLongArray, 3, true, solver1 }, // verrrry long array 0.021s
-				// second solver
-				{ new int[] { 10, 15, 3, 7 }, 17, true, solver2 }, // given example
-				{ new int[] {}, 17, false, solver2 }, // empty array
-				{ new int[] { 17 }, 17, false, solver2 }, // size-1-array
-				{ new int[] { 1, 2, 3, 4 }, 8, false, solver2 }, // does not sum up
-				{ interChangeingArrayManyDupes, 8, true, solver2 }, // verrrry long array 0.005s
-				{ interChangeingArrayManyDupesNoDupeAtEnd, 10, true, solver2 }, // verrrry long array 0.003s
-				{ veryLongArray, 3, true, solver2 }, // verrrry long array 0.284 .. slower then simple because of many inits
+
+				{ new int[] { 10, 15, 3, 7 }, 17, true }, // given example
+				{ new int[] {}, 17, false }, // empty array
+				{ new int[] { 17 }, 17, false }, // size-1-array
+
+				{ new int[] { 1, 2, 3, 4 }, 8, false }, // does not sum up
+
+				{ interChangeingArrayManyDupes, 8, true }, //
+				{ interChangeingArrayManyDupesNoDupeAtEnd, 10, true }, //
+				{ veryLongArray, 3, true }, //
+				{ impossibleAboveHalf, 8, false }, //
+				{ realLifeExample1, example1Sum, true }, //
+				{ realLifeExample2, example2Sum, true }, //
+				{ realLifeExample3, example3Sum, true }, //
+				{ realLifeExample4, example4Sum, true }, //
 
 		});
 	}
@@ -68,20 +101,24 @@ public class Day1SolverTest {
 
 	private int sum;
 	private boolean result;
-	private Day1Solver solver;
 
-	public Day1SolverTest(int[] input, int expected, boolean result, Day1Solver solver) {
+	public Day1SolverTest(int[] input, int expected, boolean result) {
 		this.in = input;
 		this.sum = expected;
 		this.result = result;
-		this.solver = solver;
+
 	}
 
 	@Test
-	public void Simple() {
+	public void testSolver1() {
 
-		Assert.assertEquals(result, solver.canSumUpTo(in, sum));
+		Assert.assertEquals(result, solver1.canSumUpTo(in, sum));
 
+	}
+
+	@Test
+	public void testSolver2() {
+		Assert.assertEquals(result, solver2.canSumUpTo(in, sum));
 	}
 
 }
