@@ -11,8 +11,12 @@ import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class Day1SolverTest {
-
-	static int[] veryLongArray = new int[Integer.MAX_VALUE / 8];
+	// this is the not hardest thing, done in the first move, but to watch overhead by optimisation
+	static int[] veryLongArray = new int[Short.MAX_VALUE * 1024];
+	// solution are the last 2 entries which are equal (dupes)
+	static int[] interChangeingArrayManyDupes = new int[Short.MAX_VALUE * 2];
+	// solution are the last 2 entries which are not equal
+	static int[] interChangeingArrayManyDupesNoDupeAtEnd = new int[Short.MAX_VALUE *2];
 	static Day1Solver solver1 = new SimpleSolver();
 	static Day1Solver solver2 = new FasterSolver();
 
@@ -21,6 +25,20 @@ public class Day1SolverTest {
 			veryLongArray[i] = 1;
 		}
 		veryLongArray[veryLongArray.length - 1] = 2;
+
+		for (int i = 0; i < interChangeingArrayManyDupes.length / 2 - 1; i++) {
+			interChangeingArrayManyDupes[i * 2] = 3;
+			interChangeingArrayManyDupes[i * 2 + 1] = 6;
+		}
+		interChangeingArrayManyDupes[interChangeingArrayManyDupes.length - 2] = 4;
+		interChangeingArrayManyDupes[interChangeingArrayManyDupes.length - 1] = 4;
+		
+		for (int i = 0; i < interChangeingArrayManyDupesNoDupeAtEnd.length / 2 - 1; i++) {
+			interChangeingArrayManyDupesNoDupeAtEnd[i * 2] = 3;
+			interChangeingArrayManyDupesNoDupeAtEnd[i * 2 + 1] = 11;
+		}
+		interChangeingArrayManyDupesNoDupeAtEnd[interChangeingArrayManyDupesNoDupeAtEnd.length - 2] = 2;
+		interChangeingArrayManyDupesNoDupeAtEnd[interChangeingArrayManyDupesNoDupeAtEnd.length - 1] = 8;
 	}
 
 	@Parameters(name = "{index}: canSumUpTo({0},{1}) ) {2} with solver {3}")
@@ -31,13 +49,17 @@ public class Day1SolverTest {
 				{ new int[] {}, 17, false, solver1 }, // empty array
 				{ new int[] { 17 }, 17, false, solver1 }, // size-1-array
 				{ new int[] { 1, 2, 3, 4 }, 8, false, solver1 }, // does not sum up
-				{ veryLongArray, 3, true, solver1 }, // verrrry long array
+				{ interChangeingArrayManyDupes, 8, true, solver1 }, // verrrry long array 1.101s
+				{ interChangeingArrayManyDupesNoDupeAtEnd, 10, true, solver1 }, // verrrry long array 1.093s
+				{ veryLongArray, 3, true, solver1 }, // verrrry long array 0.021s
 				// second solver
 				{ new int[] { 10, 15, 3, 7 }, 17, true, solver2 }, // given example
 				{ new int[] {}, 17, false, solver2 }, // empty array
 				{ new int[] { 17 }, 17, false, solver2 }, // size-1-array
 				{ new int[] { 1, 2, 3, 4 }, 8, false, solver2 }, // does not sum up
-				{ veryLongArray, 3, true, solver2 }, // verrrry long array
+				{ interChangeingArrayManyDupes, 8, true, solver2 }, // verrrry long array 0.005s
+				{ interChangeingArrayManyDupesNoDupeAtEnd, 10, true, solver2 }, // verrrry long array 0.003s
+				{ veryLongArray, 3, true, solver2 }, // verrrry long array 0.284 .. slower then simple because of many inits
 
 		});
 	}

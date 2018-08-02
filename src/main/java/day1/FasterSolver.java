@@ -1,8 +1,7 @@
 package day1;
 
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class FasterSolver implements Day1Solver {
 
@@ -13,13 +12,49 @@ public class FasterSolver implements Day1Solver {
 			return false;
 		}
 
-		Set<Integer> possible = Arrays.stream(a).boxed().collect(Collectors.toSet());
-		
-		for (int i = 0; i < a.length; i++) {
-			if (possible.contains(sum - a[i])) {
+		Set<Integer> lower = new HashSet<Integer>(a.length/2);
+		Set<Integer> bigger = new HashSet<Integer>(a.length/2);
+		Set<Integer> dupes = new HashSet<Integer>();
+		// first pass
+		for (int j = 1; j < a.length; j++) {
+			if (dupes.contains(a[j])) {
+				continue;
+			}
+			
+			
+			if (a[0] + a[j] == sum) {
 				return true;
+			} else if (a[0] + a[j] > sum) {
+				if (lower.contains(a[j])) {
+					dupes.add(a[j]);
+				} else {
+					lower.add(a[j]);
+				}
+			} else {
+				if (bigger.contains(a[j])) {
+					dupes.add(a[j]);
+				} else {
+					bigger.add(a[j]);
+				}
 			}
 		}
+
+		if (sum % 2 == 0) {
+			for (int i : dupes) {
+				if (i + i == sum) {
+					return true;
+				}
+			}
+		}
+
+		for (int i : lower) {
+			for (int j : bigger) {
+				if (i + j == sum) {
+					return true;
+				}
+			}
+		}
+
 		return false;
 	}
 
