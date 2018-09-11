@@ -5,8 +5,8 @@ public class SimpleSolver implements Day2Solver {
 	@Override
 	public int[] solve(int[] in) {
 		int prod = 1;
-		for (int i = 0; i < in.length; i++) {
-			prod *= in[i];
+		for (int anIn : in) {
+			prod *= anIn;
 		}
 		int[] result = new int[in.length];
 		for (int i = 0; i < in.length; i++) {
@@ -14,5 +14,4 @@ public class SimpleSolver implements Day2Solver {
 		}
 		return result;
 	}
-
 }

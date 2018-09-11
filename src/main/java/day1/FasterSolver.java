@@ -15,11 +15,11 @@ public class FasterSolver implements Day1Solver {
 		int half = sum / 2;
 		boolean even = (sum % 2 == 0);
 		boolean firstHalfFound = false;
-		for (int j = 0; j < a.length; j++) {
-			if (a[j] > sum || a[j] < 1) {
+		for (int anA : a) {
+			if (anA > sum || anA < 1) {
 				continue;
 			}
-			if (even && a[j] == half) {
+			if (even && anA == half) {
 				if (!firstHalfFound) {
 					firstHalfFound = true;
 				} else {
@@ -28,18 +28,18 @@ public class FasterSolver implements Day1Solver {
 				continue;
 			}
 
-			if (missing[a[j]]) {
+			if (missing[anA]) {
 				return true;
 			}
-			missing[sum - a[j]] = true;
+			missing[sum - anA] = true;
 
 		}
 
-		for (int j = 0; j < a.length; j++) {
-			if (a[j] > sum || a[j] < 1) {
+		for (int anA : a) {
+			if (anA > sum || anA < 1) {
 				continue;
 			}
-			if (missing[a[j]]) {
+			if (missing[anA]) {
 				return true;
 			}
 		}
