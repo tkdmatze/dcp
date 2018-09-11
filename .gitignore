@@ -5,3 +5,5 @@
 /.settings/
 /gradlew
 /gradlew.bat
+/.idea/
+/*.iml/
