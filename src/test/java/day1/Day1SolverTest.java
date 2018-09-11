@@ -107,7 +107,6 @@ public class Day1SolverTest {
 
     @Test
     public void testSolver1() {
-
         Assert.assertEquals(result, solver1.canSumUpTo(in, sum));
 
     }
